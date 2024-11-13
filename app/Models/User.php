@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    protected $with = ["water_intakes","daily_goals"];
+    protected $with = ["water_intakes","daily_goals", "reminders"];
 
     public function water_intakes(): HasMany
     {
@@ -56,5 +56,10 @@ class User extends Authenticatable
     public function daily_goals(): HasMany
     {
         return $this->hasMany(DailyGoals::class);
+    }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
     }
 }
