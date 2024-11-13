@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('water_intakes', function (Blueprint $table) {
+        Schema::create('daily_goals', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->float("amount");
-            $table->date("date");
+            $table->float("goal_amount");
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('water_intakes');
+        Schema::dropIfExists('daily_goals');
     }
 };
