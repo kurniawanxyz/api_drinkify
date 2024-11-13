@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId("user_id")->constrained()->cascadeOnUpdate()->restrictOnDelete();
             $table->float("amount");
-            $table->date("date");
+            $table->date("date")->default(now());
             $table->timestamps();
         });
     }

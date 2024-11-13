@@ -88,7 +88,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 if ($e instanceof QueryException) {
                     return response()->json([
                         'success' => false,
-                        'message' => "Database query error",
+                        'message' => $e->getMessage(),
                         'errors' => null
                     ], 500);
                 }
