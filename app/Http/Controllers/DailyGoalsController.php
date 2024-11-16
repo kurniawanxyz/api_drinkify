@@ -15,6 +15,13 @@ class DailyGoalsController extends Controller
         return $this->response(200, "Get data goals successfully", $goals);
     }
 
+    public function today(Request $request)
+    {
+        // $goal = auth()->user()->daily_goals()->whereDate('created_at', now())->first();
+        $goal = auth()->user()->goals_today;
+        return $this->response(200, "Get data goals successfully", $goal);
+    }
+
     public function show($id)
     {
         $goal = auth()->user()->daily_goals()->findOrFail($id);
@@ -23,9 +30,23 @@ class DailyGoalsController extends Controller
 
     public function store(StoreDailyGoalsStore $request)
     {
-        auth()->user()->daily_goals()->create($request->validated());
-        return $this->response(201,"Create daily goals successfully");
+        $user = auth()->user();
+        $today = now()->format('Y-m-d'); // Mengambil tanggal hari ini dalam format yang sesuai (YYYY-MM-DD)
+
+        // Cek apakah sudah ada daily goal untuk hari ini
+        $dailyGoal = $user->daily_goals()->whereDate('created_at', $today)->first();
+
+        if ($dailyGoal) {
+            // Jika sudah ada, lakukan update
+            $dailyGoal->update($request->validated());
+            return $this->response(200, "Daily goals updated successfully");
+        } else {
+            // Jika belum ada, buat data baru
+            $user->daily_goals()->create($request->validated());
+            return $this->response(201, "Daily goals created successfully");
+        }
     }
+
 
     public function update(UpdateDailyGoalsStore $request, $id)
     {

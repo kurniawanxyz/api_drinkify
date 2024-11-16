@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\RequestUpdateToken;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -34,6 +35,18 @@ class AuthController extends Controller
         } catch (Exception $th) {
             return $this->response(500, $th->getMessage());
         }
+    }
+
+    public function updateToken(RequestUpdateToken $request)
+    {
+        try {
+            $data = $request->validated();
+            $user = auth()->user()->update($data);
+            return $this->response(200,"Sukses memperbarui user", $user);
+        } catch (\Throwable $th) {
+            return $this->response(500,$th->getMessage());
+        }
+
     }
 
     public function detail()

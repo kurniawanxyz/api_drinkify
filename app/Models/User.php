@@ -46,20 +46,59 @@ class User extends Authenticatable
         ];
     }
 
-    protected $with = ["water_intakes","daily_goals", "reminders"];
+    protected $with = ["daily_goals", "reminders", "goalsToday"];
 
-    public function water_intakes(): HasMany
-    {
-        return $this->hasMany(WaterIntake::class);
-    }
 
     public function daily_goals(): HasMany
     {
-        return $this->hasMany(DailyGoals::class);
+        return $this->hasMany(DailyGoals::class)->orderBy("created_at","desc");
+    }
+
+    public function goalsToday()
+    {
+        return $this->hasOne(DailyGoals::class)->whereDate("created_at", now());
     }
 
     public function reminders(): HasMany
     {
         return $this->hasMany(Reminder::class);
     }
+
+    public function getGoalsSuccessAttribute(): int
+    {
+        return $this->daily_goals->filter(function ($goal) {
+            return $goal->remaining_water === 0;
+        })->count();
+    }
+
+    public function getGoalsFailedAttribute(): int
+    {
+        return $this->daily_goals->filter(function ($goal) {
+            return $goal->remaining_water != 0;
+        })->count();
+    }
+
+    public function getAverageWaterIntakesAttribute(): string
+    {
+        $totalWaterIntake = $this->daily_goals->sum(function ($goal) {
+            return $goal->total_water_intake;
+        });
+
+        $daysCount = $this->daily_goals->count();
+
+        $average = $daysCount > 0 ? $totalWaterIntake / $daysCount : 0;
+
+        // Format nilai rata-rata menjadi float dengan dua desimal
+        return number_format($average, 2, '.', '');
+    }
+
+
+
+    // public function getRemainingWaterAttribute(): int
+    // {
+    //     return max(0, $this->goal_amount - $this->total_water_intake);
+    // }
+
+    protected $appends = ["goals_success","goals_failed", "average_water_intakes"];
+
 }

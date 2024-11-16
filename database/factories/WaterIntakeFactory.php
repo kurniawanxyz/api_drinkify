@@ -17,7 +17,7 @@ class WaterIntakeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "amount" => fake()->numberBetween(0,1000)
         ];
     }
 }

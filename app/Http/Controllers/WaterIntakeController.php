@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWaterIntakeStore;
 use App\Http\Requests\UpdateWaterIntakeStore;
+use App\Models\DailyGoals;
 use App\Models\WaterIntake;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,7 @@ class WaterIntakeController extends Controller
         return $this->response(200, "Get data goals successfully", $goals);
     }
 
+
     public function show($id)
     {
         $goal = auth()->user()->water_intakes()->findOrFail($id);
@@ -24,7 +26,10 @@ class WaterIntakeController extends Controller
 
     public function store(StoreWaterIntakeStore $request)
     {
-        auth()->user()->water_intakes()->create($request->validated());
+        $data = $request->validated();
+        $goal = auth()->user()->daily_goals()->whereDate("created_at",today())->first();
+
+        $goal->water_intakes()->create($data);
         return $this->response(201,"Create daily goals successfully");
     }
 
@@ -36,7 +41,7 @@ class WaterIntakeController extends Controller
 
     public function destroy($id)
     {
-        auth()->user()->water_intakes()->findOrFail($id)->delete();
+        WaterIntake::findOrFail($id)->delete();
         return $this->response(201,"Delete daily goals successfully");
     }
 }

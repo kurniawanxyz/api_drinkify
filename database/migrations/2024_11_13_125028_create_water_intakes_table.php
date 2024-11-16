@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('water_intakes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId("daily_goals_id")->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->float("amount");
-            $table->date("date")->default(now());
             $table->timestamps();
         });
     }

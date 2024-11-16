@@ -17,7 +17,8 @@ class DailyGoalsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "goal_amount" => fake()->numberBetween(0,200000),
+            "created_at" => fake()->dateTime()
         ];
     }
 }
