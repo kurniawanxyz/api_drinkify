@@ -13,6 +13,8 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix("auths")->controller(AuthController::class)->group(function(){
+    Route::get("/details","detail")->middleware("auth:sanctum");
+
     Route::post("/login","login")->name("login");
     Route::post("/logout","logout")->middleware("auth:sanctum");
     Route::post("/register","register");

@@ -36,13 +36,19 @@ class AuthController extends Controller
         }
     }
 
+    public function detail()
+    {
+        $data = auth()->user();
+        return $this->response(200, "Get user detail is successfully", $data);
+    }
+
     public function register(RegisterRequest $request)
     {
         try {
             $data = $request->validated();
             $data['password'] = bcrypt($data['password']);
             $user = User::create($data);
-            return $this->response(200,"Login Success",compact("user"));
+            return $this->response(200,"Register Success",compact("user"));
         } catch (Exception $th) {
             return $this->response(500, $th->getMessage());
         }
