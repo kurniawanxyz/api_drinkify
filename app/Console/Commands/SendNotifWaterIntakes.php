@@ -1,12 +1,10 @@
 <?php
-
 namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Notifications\WaterIntakesNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use YieldStudio\LaravelExpoNotifier\Dto\ExpoNotification;
 
 class SendNotifWaterIntakes extends Command
 {
@@ -22,23 +20,34 @@ class SendNotifWaterIntakes extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Send water intake reminder notifications to users.';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $users = User::whereNotNull("token")->whereHas("goalsToday")->get();
+        $users = User::whereHas("goalsToday")
+                     ->get();
 
+                     Log::info($users);
         foreach ($users as $user) {
+            if (!$user->goalsToday) {
+                continue;
+            }
+
             try {
-                $user->notify(new WaterIntakesNotification($user->goalsToday->remaining_water));
-                Log::error("Notiikasi send to {$user->email}");
+                if($user->goalsToday->remaining_water > 0){
+                    $user->notifications()->create([
+                        "title" => "Reminder to drink water",
+                        "content" => "{$user->goalsToday->remaining_water}ml to achieve goals today"
+                    ]);
+                }
+                // $user->notify(new WaterIntakesNotification($user->goalsToday->remaining_water));
+                Log::info("Notification sent to {$user->email}");
             } catch (\Exception $e) {
                 Log::error("Failed to send notification to user {$user->id}: {$e->getMessage()}");
             }
         }
     }
-
 }

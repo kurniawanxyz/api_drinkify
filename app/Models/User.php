@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    protected $with = ["daily_goals", "reminders", "goalsToday"];
+    protected $with = ["daily_goals", "reminders", "goalsToday","notifications"];
 
 
     public function daily_goals(): HasMany
@@ -92,6 +92,10 @@ class User extends Authenticatable
         return number_format($average, 2, '.', '');
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->orderBy("created_at","desc")->take(10);
+    }
 
 
     // public function getRemainingWaterAttribute(): int

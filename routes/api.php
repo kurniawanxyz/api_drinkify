@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DailyGoalsController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\WaterIntakeController;
 use App\Models\DailyGoals;
@@ -23,9 +24,11 @@ Route::middleware("auth:sanctum")->group(function(){
     Route::apiResource("water-intakes",WaterIntakeController::class);
     Route::apiResource("reminders",ReminderController::class);
     Route::post("/token",[AuthController::class,"updateToken"]);
+    Route::apiResource("notifications", NotificationController::class);
     Route::prefix("daily-goals/")->controller(DailyGoalsController::class)->group(function(){
         Route::get("/today","today")->middleware("auth:sanctum");
     });
+
 });
 
 
