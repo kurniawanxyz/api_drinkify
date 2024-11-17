@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('sanctum:prune-expired --hours=24')->daily();
-Schedule::command('app:send-notif-water-intakes')->everyMinute();
+Schedule::command('app:send-notif-water-intakes')->everyFiveMinutes();
