@@ -30,7 +30,7 @@ class SendNotifWaterIntakes extends Command
         $users = User::whereHas("goalsToday")
                      ->get();
 
-                     Log::info($users);
+        Log::info($users);
         foreach ($users as $user) {
             if (!$user->goalsToday) {
                 continue;
