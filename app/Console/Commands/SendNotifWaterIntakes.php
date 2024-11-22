@@ -42,8 +42,8 @@ class SendNotifWaterIntakes extends Command
                         "title" => "Reminder to drink water",
                         "content" => "{$user->goalsToday->remaining_water}ml to achieve goals today"
                     ]);
+                    $user->notify(new WaterIntakesNotification($user->goalsToday->remaining_water));
                 }
-                // $user->notify(new WaterIntakesNotification($user->goalsToday->remaining_water));
                 Log::info("Notification sent to {$user->email}");
             } catch (\Exception $e) {
                 Log::error("Failed to send notification to user {$user->id}: {$e->getMessage()}");
